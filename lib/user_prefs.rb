@@ -5,21 +5,36 @@ require "user_prefs/version"
 module UserPrefs
   class ColumnError < StandardError; end
 
-  def self.included(base)
-    unless base.column_names.include?(base.prefs_column)
-      raise(ColumnError, "#{base.name} must have a column named "\
-                         "'#{base.prefs_column}' with type 'text'.")
+  class << self
+    def included(base)
+      validate_column_and_type(base)
+
+      base.class_eval do
+        class_attribute :defined_prefs
+
+        self.defined_prefs ||= []
+
+        serialize prefs_column.to_sym, HashWithIndifferentAccess
+      end
+
+      base.extend(ClassMethods)
     end
 
-    base.class_eval do
-      class_attribute :defined_prefs
+    private
 
-      self.defined_prefs ||= []
-
-      serialize prefs_column.to_sym, HashWithIndifferentAccess
+    def no_column?(base)
+      !base.column_types[base.prefs_column]
     end
 
-    base.extend(ClassMethods)
+    def wrong_type?(base)
+      base.column_types[base.prefs_column] &&
+        base.column_types[base.prefs_column].type.to_s != 'text'
+    end
+
+    def validate_column_and_type(base)
+      raise ColumnError, "#{base.name} must have column #{base.prefs_column}." if no_column?(base)
+      raise ColumnError, "#{base.prefs_column} must be of type 'text'." if wrong_type?(base)
+    end
   end
 
   def prefs
