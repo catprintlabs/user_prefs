@@ -3,7 +3,7 @@ module UserPrefs
     def has_preferences(column_name = 'preferences')
       class_attribute :prefs_column
 
-      self.prefs_column = column_name
+      self.prefs_column = column_name.to_s
       include UserPrefs
     end
   end
