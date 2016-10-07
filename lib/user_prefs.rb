@@ -1,20 +1,20 @@
 require 'user_prefs/class_methods'
 require 'user_prefs/macro_methods'
-require "user_prefs/version"
+require 'user_prefs/version'
 
 module UserPrefs
   class ColumnError < StandardError; end
 
   class << self
     def included(base)
-      validate_column_and_type(base)
+      validate_column_and_type(base) unless RUBY_ENGINE == :opal
 
       base.class_eval do
         class_attribute :defined_prefs
 
         self.defined_prefs ||= []
 
-        serialize prefs_column.to_sym, HashWithIndifferentAccess
+        serialize(prefs_column.to_sym, RUBY_ENGINE == 'opal' ? Hash : HashWithIndifferentAccess)
       end
 
       base.extend(ClassMethods)
@@ -42,7 +42,7 @@ module UserPrefs
   end
 
   def add_pref(key, value)
-    prefs_attr[key] = value
+    self.prefs_attr = prefs_attr.merge(Hash[key, value])
   end
 
   def delete_pref(key)
@@ -82,4 +82,15 @@ end
 
 ActiveRecord::Base.class_eval do
   extend UserPrefs::MacroMethods
+end
+
+unless RUBY_ENGINE == 'opal'
+  # Now if we are NOT running inside of opal, set things up so opal can find
+  # the files. The whole thing is rescued in case the opal gem is not available.
+  # This would happen if the gem is being used server side ONLY.
+  begin
+    require 'opal'
+    Opal.append_path File.expand_path('..', __FILE__).untaint
+  rescue LoadError
+  end
 end

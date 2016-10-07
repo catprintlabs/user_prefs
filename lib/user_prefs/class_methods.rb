@@ -7,7 +7,7 @@ module UserPrefs
       end
 
       define_method("#{name}_pref=") do |new_value|
-        prefs_attr[name] = new_value
+        self.prefs_attr = prefs_attr.merge(Hash[name, new_value])
       end
 
       define_method("#{name}_pref?") do
