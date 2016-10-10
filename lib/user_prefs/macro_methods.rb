@@ -1,6 +1,7 @@
 module UserPrefs
   module MacroMethods
-    def has_preferences(column_name = 'preferences')
+    # I think this is a good name for the macro, but Rubocop disagrees...
+    def has_preferences(column_name = 'preferences') # rubocop:disable Style/PredicateName
       class_attribute :prefs_column
 
       self.prefs_column = column_name.to_s

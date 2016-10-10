@@ -1,9 +1,11 @@
 require 'user_prefs/class_methods'
 require 'user_prefs/macro_methods'
 require 'user_prefs/version'
+require 'active_record'
 
 module UserPrefs
   class ColumnError < StandardError; end
+  class PreferenceError < StandardError; end
 
   class << self
     def included(base)
@@ -23,16 +25,21 @@ module UserPrefs
     private
 
     def no_column?(base)
-      !base.column_types[base.prefs_column]
+      !base.columns_hash[base.prefs_column]
+    end
+
+    def name_conflict?(base)
+      base.prefs_column == 'prefs'
     end
 
     def wrong_type?(base)
-      base.column_types[base.prefs_column] &&
-        base.column_types[base.prefs_column].type.to_s != 'text'
+      base.columns_hash[base.prefs_column] &&
+        base.columns_hash[base.prefs_column].type.to_s != 'text'
     end
 
     def validate_column_and_type(base)
-      raise ColumnError, "#{base.name} must have column #{base.prefs_column}." if no_column?(base)
+      raise ColumnError, "Preference column name cannot be named 'prefs'." if name_conflict?(base)
+      raise ColumnError, "#{base.name} must have column '#{base.prefs_column}'." if no_column?(base)
       raise ColumnError, "#{base.prefs_column} must be of type 'text'." if wrong_type?(base)
     end
   end
@@ -91,6 +98,6 @@ unless RUBY_ENGINE == 'opal'
   begin
     require 'opal'
     Opal.append_path File.expand_path('..', __FILE__).untaint
-  rescue LoadError
+  rescue LoadError # rubocop:disable Lint/HandleExceptions
   end
 end

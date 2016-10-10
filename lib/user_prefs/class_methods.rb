@@ -1,6 +1,8 @@
 module UserPrefs
   module ClassMethods
-    def preference(name, opts = {})
+    def preference(name = nil, opts = {})
+      validate_name(name)
+
       defined_prefs << name
       define_method("#{name}_pref") do
         prefs_attr[name] || opts[:default]
@@ -13,6 +15,13 @@ module UserPrefs
       define_method("#{name}_pref?") do
         prefs_attr.key?(name)
       end
+    end
+
+    private
+
+    def validate_name(name)
+      raise PreferenceError, 'Preference name must be specified.' unless name
+      raise PreferenceError, "#{name} has already been specified." if defined_prefs.include?(name)
     end
   end
 end
