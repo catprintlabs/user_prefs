@@ -1,7 +1,6 @@
 require 'user_prefs/class_methods'
 require 'user_prefs/macro_methods'
 require 'user_prefs/version'
-require 'active_record'
 
 module UserPrefs
   class ColumnError < StandardError; end
