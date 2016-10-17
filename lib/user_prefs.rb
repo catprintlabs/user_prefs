@@ -11,9 +11,10 @@ module UserPrefs
       validate_column_and_type(base) unless RUBY_ENGINE == :opal
 
       base.class_eval do
-        class_attribute :defined_prefs
+        class_attribute :defined_prefs, :default_prefs
 
         self.defined_prefs ||= []
+        self.default_prefs ||= {}
 
         serialize(prefs_column.to_sym, RUBY_ENGINE == 'opal' ? Hash : HashWithIndifferentAccess)
       end

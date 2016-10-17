@@ -52,6 +52,33 @@ describe UserPrefs do
     end
   end
 
+  context 'default_prefs' do
+    it 'should return an empty hash with no prefs specified' do
+      User.class_eval do
+        has_preferences
+      end
+      User.default_prefs.should eq({})
+    end
+
+    it 'should return a hash of all defined prefs with their defaults' do
+      User.class_eval do
+        has_preferences
+        preference :foo, default: 'bar'
+        preference :foo2, default: 'bar2'
+      end
+      User.default_prefs.should eq('foo' => 'bar', 'foo2' => 'bar2')
+    end
+
+    it 'should return a hash of all defined prefs even with no default specified' do
+      User.class_eval do
+        has_preferences
+        preference :foo, default: 'bar'
+        preference :foo2
+      end
+      User.default_prefs.should eq('foo' => 'bar', 'foo2' => nil)
+    end
+  end
+
   context 'preference' do
     it 'should be able to define a preference with no default' do
       User.class_eval do

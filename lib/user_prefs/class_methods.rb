@@ -4,6 +4,8 @@ module UserPrefs
       validate_name(name)
 
       defined_prefs << name
+      default_prefs[name.to_s] ||= opts[:default]
+
       define_method("#{name}_pref") do
         prefs_attr[name] || opts[:default]
       end
