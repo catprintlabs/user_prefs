@@ -11,7 +11,7 @@ Style/Documentation:
     - 'test/**/*'
 
 # Multi-line method chaining should be done with trailing dots.
-Style/DotPosition:
+Layout/DotPosition:
   EnforcedStyle: leading
   SupportedStyles:
     - leading

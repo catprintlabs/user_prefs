@@ -8,7 +8,7 @@ module UserPrefs
 
   class << self
     def included(base)
-      validate_column_and_type(base) unless RUBY_ENGINE == :opal
+      validate_column_and_type(base) unless RUBY_ENGINE == :opal || pending_migrations?
 
       base.class_eval do
         class_attribute :defined_prefs, :default_prefs
@@ -23,6 +23,16 @@ module UserPrefs
     end
 
     private
+
+    # Probably a nicer way to do this, but this will bypass column validation
+    # in the case that the user hasn't migrated the preferences column yet.
+    def pending_migrations?
+      begin
+        ActiveRecord::Migration.check_pending!
+      rescue ActiveRecord::PendingMigrationError
+        true
+      end
+    end
 
     def no_column?(base)
       !base.columns_hash[base.prefs_column]

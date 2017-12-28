@@ -1,5 +1,5 @@
 PATH
-  remote: ../../
+  remote: ../..
   specs:
     user_prefs (0.1.0)
 
@@ -210,4 +210,4 @@ DEPENDENCIES
   user_prefs!
 
 BUNDLED WITH
-   1.12.5
+   1.16.0
