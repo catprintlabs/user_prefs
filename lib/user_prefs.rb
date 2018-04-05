@@ -16,10 +16,18 @@ module UserPrefs
         self.defined_prefs ||= []
         self.default_prefs ||= {}
 
-        serialize(prefs_column.to_sym, RUBY_ENGINE == 'opal' ? Hash : HashWithIndifferentAccess)
+        serialize(prefs_column.to_sym, UserPrefs.hash_type)
       end
 
       base.extend(ClassMethods)
+    end
+
+    def hash_type
+      if const_defined?('HashWithIndifferentAccess')
+        Object.const_get('HashWithIndifferentAccess')
+      else
+        Object.const_get('Hash')
+      end
     end
 
     private
@@ -67,7 +75,7 @@ module UserPrefs
   end
 
   def method_missing(method_name, *args, &block)
-    if (match_data = method_name.to_s.match(/(\w+)_pref(=|\?)?/))
+    if (match_data = method_name.to_s.match(/(\w+)_pref(=|\?)?\z/))
       preference_method(match_data[1], match_data[2], args.first)
     else
       super
@@ -75,7 +83,7 @@ module UserPrefs
   end
 
   def respond_to_missing?(method_name, include_private = false)
-    method_name =~ /(\w+)_pref(=|\?)?/ || super
+    method_name =~ /(\w+)_pref(=|\?)?\z/ || super
   end
 
   private
