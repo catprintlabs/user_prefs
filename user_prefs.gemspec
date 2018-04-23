@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = 'Quick and easy model preferences for Rails.'
   spec.description   =
     'Add preferences to any Rails model easily by adding a text column and adding a couple macros'
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage      = 'https://www.github.com/adamcreekroad/user_prefs'
   spec.license       = 'MIT'
 
   spec.files         =
