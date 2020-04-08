@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UserPrefs
   module ClassMethods
     def preference(name = nil, opts = {})
@@ -7,7 +9,7 @@ module UserPrefs
       default_prefs[name.to_s] ||= opts[:default]
 
       define_method("#{name}_pref") do
-        prefs_attr[name] || opts[:default]
+        prefs_attr.key?(name) ? prefs_attr[name] : opts[:default]
       end
 
       define_method("#{name}_pref=") do |new_value|

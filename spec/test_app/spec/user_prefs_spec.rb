@@ -190,6 +190,15 @@ describe UserPrefs do
         @user.foo2_pref = 'bar2'
         expect(@user.foo2_pref).to eq('bar2')
       end
+
+      it 'should overwrite the default boolean value when being called' do
+        User.class_eval do
+          preference :foo2, default: true
+        end
+        expect(@user.foo2_pref).to be_truthy
+        @user.foo2_pref = false
+        expect(@user.foo2_pref).to be_falsy
+      end
     end
 
     context 'presence method' do

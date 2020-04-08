@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UserPrefs
   module MacroMethods
     # I think this is a good name for the macro, but Rubocop disagrees...

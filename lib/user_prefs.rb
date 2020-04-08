@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'user_prefs/class_methods'
 require 'user_prefs/macro_methods'
 require 'user_prefs/version'
