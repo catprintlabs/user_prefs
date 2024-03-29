@@ -18,7 +18,7 @@ module UserPrefs
         self.defined_prefs ||= []
         self.default_prefs ||= {}
 
-        serialize prefs_column.to_sym, type: UserPrefs.hash_type, code: JSON
+        serialize prefs_column.to_sym, type: UserPrefs.hash_type, coder: JSON
       end
 
       base.extend(ClassMethods)
