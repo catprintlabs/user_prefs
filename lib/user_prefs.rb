@@ -38,7 +38,7 @@ module UserPrefs
     # in the case that the user hasn't migrated the preferences column yet.
     def pending_migrations?
       begin
-        ActiveRecord::Migration.check_pending!
+        ActiveRecord::Migration.check_all_pending!
       rescue ActiveRecord::PendingMigrationError
         true
       end
